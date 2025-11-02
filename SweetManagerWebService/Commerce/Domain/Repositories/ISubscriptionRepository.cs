@@ -1,0 +1,12 @@
+﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
+using SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
+using SweetManagerWebService.Shared.Domain.Repositories;
+
+namespace SweetManagerIotWebService.API.Commerce.Domain.Repositories;
+
+public interface ISubscriptionRepository : IBaseRepository<Subscription>
+{
+    Task<Subscription?> FindByNameAsync(ESubscriptionTypes name);
+    
+    Task<IEnumerable<Subscription>> FindByStatusAsync(EStates status);
+}
