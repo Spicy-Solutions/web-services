@@ -1,0 +1,117 @@
+using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Queries;
+using SweetManagerWebService.OrganizationalManagement.Domain.Services;
+using SweetManagerWebService.OrganizationalManagement.Interfaces.REST.Resources;
+using SweetManagerWebService.OrganizationalManagement.Interfaces.REST.Transform;
+
+namespace SweetManagerWebService.OrganizationalManagement.Interfaces.REST;
+
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Authorize]
+    public class MultimediaController(IMultimediaCommandService multimediaCommandService, 
+        IMultimediaQueryService multimediaQueryService) : ControllerBase
+    {
+        [HttpPost]
+        public async Task<IActionResult> CreateMultimedia([FromBody] CreateMultimediaResource resource)
+        {
+            try
+            {
+                var multimediaCommand = CreateMultimediaCommandFromResourceAssembler.ToCommandFromResource(resource);
+
+                var response = await multimediaCommandService.Handle(multimediaCommand);
+
+                var responseResource = MultimediaResourceFromEntityAssembler.ToResourceFromEntity(response!);
+
+                return StatusCode(StatusCodes.Status201Created, responseResource);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{multimediaId:int}")]
+        public async Task<IActionResult> UpdateMultimedia(int multimediaId, [FromBody]UpdateMultimediaResource resource)
+        {
+            try
+            {
+                var multimediaCommand = UpdateMultimediaCommandFromResourceAssembler.ToCommandFromResource(resource);
+
+                var response = await multimediaCommandService.Handle(multimediaCommand);
+
+                var responseResource = MultimediaResourceFromEntityAssembler.ToResourceFromEntity(response!);
+
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("details")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllDetails([FromQuery] int hotelId)
+        {
+            try
+            {
+                var multimedias = await multimediaQueryService.Handle(new GetAllDetailMultimediaByHotelIdQuery(hotelId));
+
+                var multimediaResources = multimedias.Select(MultimediaResourceFromEntityAssembler.ToResourceFromEntity);
+
+                return Ok(multimediaResources);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("main")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMain([FromQuery] int hotelId)
+        {
+            try
+            {
+                var multimedia = await multimediaQueryService.Handle(new GetMainMultimediaByHotelIdQuery(hotelId));
+                MultimediaResource multimediaResource;
+                if (multimedia != null)
+                {
+                    multimediaResource = MultimediaResourceFromEntityAssembler.ToResourceFromEntity(multimedia);
+
+                    return Ok(multimediaResource);
+                }
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpGet("logo")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetLogo([FromQuery] int hotel)
+        {
+            try 
+            {
+                var multimedia = await multimediaQueryService.Handle(new GetLogoMultimediaByHotelIdQuery(hotel));
+                MultimediaResource multimediaResource;
+                if (multimedia != null)
+                {
+                    multimediaResource = MultimediaResourceFromEntityAssembler.ToResourceFromEntity(multimedia);
+
+                    return Ok(multimediaResource);
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
