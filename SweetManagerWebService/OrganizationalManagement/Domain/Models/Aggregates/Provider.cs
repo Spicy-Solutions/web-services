@@ -1,10 +1,8 @@
 using SweetManagerWebService.Models;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Commands;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.ValueObjects;
-using Hotel = SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates.Hotel;
 
 namespace SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
-
 public partial class Provider
 {
     public int Id { get; set; }
@@ -40,9 +38,8 @@ public partial class Provider
         Email = command.Email;
         Phone = command.Phone;
         State = Enum.TryParse<State>(command.State, true, out var stateEnum) ? stateEnum : throw new ArgumentException("Invalid state, use 'Active' or 'Inactive'");
-        HotelId = command.HotelId;
+        HotelId = command.HotelId; 
     }
-    
     public void UpdateData(UpdateProviderCommand command)
     {
         Name = command.Name;
