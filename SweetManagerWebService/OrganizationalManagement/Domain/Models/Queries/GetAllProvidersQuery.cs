@@ -1,3 +1,3 @@
 namespace SweetManagerWebService.OrganizationalManagement.Domain.Models.Queries;
 
-public record GetAllProvidersQuery();
+public record GetAllProvidersQuery(int hotelId);
