@@ -36,6 +36,8 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Monitoring\Application\" />
+    <Folder Include="Monitoring\Interfaces\" />
   </ItemGroup>
 
 </Project>
