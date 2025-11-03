@@ -26,4 +26,23 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="false" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/SweetManagerWebService/Monitoring/Infrastructure/Persistence/EFC/Repositories/TypeRoomRepository.cs</url>
+          <line>14</line>
+          <properties documentPath="$PROJECT_DIR$/SweetManagerWebService/Monitoring/Infrastructure/Persistence/EFC/Repositories/TypeRoomRepository.cs" containingFunctionPresentation="">
+            <startOffsets>
+              <option value="820" />
+            </startOffsets>
+            <endOffsets>
+              <option value="825" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
 </project>

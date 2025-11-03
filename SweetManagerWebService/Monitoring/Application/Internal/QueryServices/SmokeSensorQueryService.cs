@@ -1,0 +1,33 @@
+
+using SweetManagerWebService.Monitoring.Domain.Model.Aggregates;
+using SweetManagerWebService.Monitoring.Domain.Model.Queries;
+using SweetManagerWebService.Monitoring.Domain.Repositories;
+using SweetManagerWebService.Monitoring.Domain.Services.SmokeSensor;
+
+namespace SweetManagerWebService.Monitoring.Application.Internal.QueryServices;
+
+public class SmokeSensorQueryService : ISmokeSensorQueryServices
+{
+    private readonly ISmokeSensorRepositoy _smokesensorRepositoy;
+
+    public SmokeSensorQueryService(ISmokeSensorRepositoy SmokeSensorRepositoy)
+    {
+        _smokesensorRepositoy = SmokeSensorRepositoy;
+    }
+
+    public async Task<SmokeSensor?> Handle(GetSmokeSensorByIdQuery query)
+    {
+        return await _smokesensorRepositoy.FindByIdAsync(query.id);
+    }
+
+    public async Task<IEnumerable<SmokeSensor>> Handle(GetSmokeSensorByRoomIdQuery query)
+    {
+        
+        return await _smokesensorRepositoy.FindByRoomIdAsync(query.roomId);
+    }
+
+    public async Task<IEnumerable<SmokeSensor>> Handle(GetAllSmokeSensorsByHotelIdQuery query)
+    {
+        return await _smokesensorRepositoy.FindAllSmokeSensors(query.HotelId);
+    }
+}
