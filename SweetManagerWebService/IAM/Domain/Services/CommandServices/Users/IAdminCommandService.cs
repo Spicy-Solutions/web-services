@@ -1,0 +1,17 @@
+﻿using SweetManagerWebService.IAM.Domain.Model.Aggregates;
+using SweetManagerWebService.IAM.Domain.Model.Commands.Authentication;
+
+namespace SweetManagerWebService.IAM.Domain.Services.CommandServices.Users
+{
+    public interface IAdminCommandService
+    {
+
+        Task<Admin?> Handle(SignUpUserCommand command);
+
+        Task<Admin?> Handle(UpdateUserCommand command);
+
+        Task<dynamic?> Handle(SignInUserCommand command);
+
+        Task<bool> Handle(UpdateAdminHotelIdCommand command);
+    }
+}
