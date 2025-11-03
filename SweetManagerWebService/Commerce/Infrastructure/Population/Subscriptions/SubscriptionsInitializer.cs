@@ -1,9 +1,9 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Queries;
-using SweetManagerIotWebService.API.Commerce.Domain.Services;
+﻿using SweetManagerWebService.Commerce.Domain.Model.Commands;
+using SweetManagerWebService.Commerce.Domain.Model.Queries;
+using SweetManagerWebService.Commerce.Domain.Services;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 
-namespace SweetManagerIotWebService.API.Commerce.Infrastructure.Population.Subscriptions;
+namespace SweetManagerWebService.Commerce.Infrastructure.Population.Subscriptions;
 
 public class SubscriptionsInitializer(ISubscriptionCommandService subscriptionCommandService, ISubscriptionQueryService subscriptionQueryService,
     SweetManagerContext context)

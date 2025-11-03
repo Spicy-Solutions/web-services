@@ -1,4 +1,4 @@
-﻿namespace SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
+﻿namespace SweetManagerWebService.Commerce.Domain.Model.ValueObjects;
 
 public enum EStates
 {

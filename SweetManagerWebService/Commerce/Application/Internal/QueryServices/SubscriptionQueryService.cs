@@ -1,9 +1,9 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Queries;
-using SweetManagerIotWebService.API.Commerce.Domain.Repositories;
-using SweetManagerIotWebService.API.Commerce.Domain.Services;
+﻿using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
+using SweetManagerWebService.Commerce.Domain.Model.Queries;
+using SweetManagerWebService.Commerce.Domain.Repositories;
+using SweetManagerWebService.Commerce.Domain.Services;
 
-namespace SweetManagerIotWebService.API.Commerce.Application.Internal.QueryServices;
+namespace SweetManagerWebService.Commerce.Application.Internal.QueryServices;
 
 public class SubscriptionQueryService(ISubscriptionRepository subscriptionRepository) : ISubscriptionQueryService
 {

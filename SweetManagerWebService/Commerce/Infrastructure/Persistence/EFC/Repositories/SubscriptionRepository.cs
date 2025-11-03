@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
-using SweetManagerIotWebService.API.Commerce.Domain.Repositories;
+using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
+using SweetManagerWebService.Commerce.Domain.Model.ValueObjects;
+using SweetManagerWebService.Commerce.Domain.Repositories;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Repositories;
 
-namespace SweetManagerIotWebService.API.Commerce.Infrastructure.Persistence.EFC.Repositories;
+namespace SweetManagerWebService.Commerce.Infrastructure.Persistence.EFC.Repositories;
 
 public class SubscriptionRepository(SweetManagerContext context) : BaseRepository<Subscription>(context), ISubscriptionRepository
 {

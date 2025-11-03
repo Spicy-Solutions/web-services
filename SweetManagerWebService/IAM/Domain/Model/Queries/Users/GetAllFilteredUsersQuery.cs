@@ -1,0 +1,4 @@
+﻿namespace SweetManagerWebService.IAM.Domain.Model.Queries.Users
+{
+    public record GetAllFilteredUsersQuery(string? Email, string? Phone, string? State);
+}

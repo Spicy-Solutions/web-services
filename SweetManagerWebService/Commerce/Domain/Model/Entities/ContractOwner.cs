@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
-using SweetManagerIotWebService.API.IAM.Domain.Model.Aggregates;
+using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
+using SweetManagerWebService.Commerce.Domain.Model.Commands;
+using SweetManagerWebService.Commerce.Domain.Model.ValueObjects;
+using SweetManagerWebService.IAM.Domain.Model.Aggregates;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
+namespace SweetManagerWebService.Commerce.Domain.Model.Entities;
 
 public partial class ContractOwner
 {

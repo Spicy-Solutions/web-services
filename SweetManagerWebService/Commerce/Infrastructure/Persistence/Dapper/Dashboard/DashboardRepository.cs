@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using Dapper;
-using SweetManagerIotWebService.API.Commerce.Domain.Repositories;
+using SweetManagerWebService.Commerce.Domain.Repositories;
 
-namespace SweetManagerIotWebService.API.Commerce.Infrastructure.Persistence.Dapper.Dashboard;
+namespace SweetManagerWebService.Commerce.Infrastructure.Persistence.Dapper.Dashboard;
 
 public class DashboardRepository(IDbConnection dbConnection) : IDashboardRepository
 {

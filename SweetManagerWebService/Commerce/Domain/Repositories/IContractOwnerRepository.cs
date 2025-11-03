@@ -1,7 +1,7 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
+﻿using SweetManagerWebService.Commerce.Domain.Model.Entities;
 using SweetManagerWebService.Shared.Domain.Repositories;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Repositories;
+namespace SweetManagerWebService.Commerce.Domain.Repositories;
 
 public interface IContractOwnerRepository : IBaseRepository<ContractOwner>
 {

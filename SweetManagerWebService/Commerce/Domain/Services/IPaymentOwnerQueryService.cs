@@ -1,7 +1,7 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Queries;
+﻿using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
+using SweetManagerWebService.Commerce.Domain.Model.Queries;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Services;
+namespace SweetManagerWebService.Commerce.Domain.Services;
 
 public interface IPaymentOwnerQueryService
 {

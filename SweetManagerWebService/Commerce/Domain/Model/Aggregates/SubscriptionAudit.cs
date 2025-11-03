@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using EntityFrameworkCore.CreatedUpdatedDate.Contracts;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
+namespace SweetManagerWebService.Commerce.Domain.Model.Aggregates;
 
 public partial class Subscription : IEntityWithCreatedUpdatedDate
 {

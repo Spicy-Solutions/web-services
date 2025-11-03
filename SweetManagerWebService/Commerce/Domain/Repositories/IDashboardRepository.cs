@@ -1,4 +1,4 @@
-﻿namespace SweetManagerIotWebService.API.Commerce.Domain.Repositories;
+﻿namespace SweetManagerWebService.Commerce.Domain.Repositories;
 
 public interface IDashboardRepository
 {

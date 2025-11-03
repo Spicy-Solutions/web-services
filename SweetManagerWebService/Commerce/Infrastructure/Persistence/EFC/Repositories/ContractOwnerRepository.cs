@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
-using SweetManagerIotWebService.API.Commerce.Domain.Repositories;
+using SweetManagerWebService.Commerce.Domain.Model.Entities;
+using SweetManagerWebService.Commerce.Domain.Repositories;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Repositories;
 
-namespace SweetManagerIotWebService.API.Commerce.Infrastructure.Persistence.EFC.Repositories;
+namespace SweetManagerWebService.Commerce.Infrastructure.Persistence.EFC.Repositories;
 
 public class ContractOwnerRepository(SweetManagerContext context) : BaseRepository<ContractOwner>(context), IContractOwnerRepository
 {
