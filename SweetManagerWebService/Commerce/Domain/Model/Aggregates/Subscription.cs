@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
+using SweetManagerWebService.Commerce.Domain.Model.Commands;
+using SweetManagerWebService.Commerce.Domain.Model.Entities;
+using SweetManagerWebService.Commerce.Domain.Model.ValueObjects;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
+namespace SweetManagerWebService.Commerce.Domain.Model.Aggregates;
 
 public partial class Subscription
 {

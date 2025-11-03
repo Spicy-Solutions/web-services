@@ -1,5 +1,5 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
+﻿using SweetManagerWebService.Commerce.Domain.Model.ValueObjects;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Queries;
+namespace SweetManagerWebService.Commerce.Domain.Model.Queries;
 
 public record GetAllSubscriptionsByStatusQuery(EStates Status);

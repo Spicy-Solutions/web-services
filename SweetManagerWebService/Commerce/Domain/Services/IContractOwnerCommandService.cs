@@ -1,7 +1,7 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
+﻿using SweetManagerWebService.Commerce.Domain.Model.Commands;
+using SweetManagerWebService.Commerce.Domain.Model.Entities;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Services;
+namespace SweetManagerWebService.Commerce.Domain.Services;
 
 public interface IContractOwnerCommandService
 {

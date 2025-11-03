@@ -1,12 +1,12 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Queries;
-using SweetManagerIotWebService.API.Commerce.Domain.Services;
-using SweetManagerIotWebService.API.Commerce.Interfaces.REST.Resources;
-using SweetManagerIotWebService.API.Commerce.Interfaces.REST.Transform;
-using SweetManagerIotWebService.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
+using SweetManagerWebService.Commerce.Domain.Model.Queries;
+using SweetManagerWebService.Commerce.Domain.Services;
+using SweetManagerWebService.Commerce.Interfaces.REST.Resources;
+using SweetManagerWebService.Commerce.Interfaces.REST.Transform;
+using SweetManagerWebService.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 
-namespace SweetManagerIotWebService.API.Commerce.Interfaces.REST;
+namespace SweetManagerWebService.Commerce.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/[controller]")]

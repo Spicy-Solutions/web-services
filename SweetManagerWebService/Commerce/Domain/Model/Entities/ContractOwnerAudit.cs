@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using EntityFrameworkCore.CreatedUpdatedDate.Contracts;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
+namespace SweetManagerWebService.Commerce.Domain.Model.Entities;
 
 public partial class ContractOwner : IEntityWithCreatedUpdatedDate
 {

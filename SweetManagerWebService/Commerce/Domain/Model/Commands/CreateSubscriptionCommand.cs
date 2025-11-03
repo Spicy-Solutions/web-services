@@ -1,6 +1,6 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.ValueObjects;
+﻿using SweetManagerWebService.Commerce.Domain.Model.ValueObjects;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
+namespace SweetManagerWebService.Commerce.Domain.Model.Commands;
 
 public record CreateSubscriptionCommand(
     ESubscriptionTypes Name, 

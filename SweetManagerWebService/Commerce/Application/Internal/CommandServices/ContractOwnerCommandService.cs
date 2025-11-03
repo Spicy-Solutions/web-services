@@ -1,10 +1,10 @@
-﻿using SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Entities;
-using SweetManagerIotWebService.API.Commerce.Domain.Repositories;
-using SweetManagerIotWebService.API.Commerce.Domain.Services;
+﻿using SweetManagerWebService.Commerce.Domain.Model.Commands;
+using SweetManagerWebService.Commerce.Domain.Model.Entities;
+using SweetManagerWebService.Commerce.Domain.Repositories;
+using SweetManagerWebService.Commerce.Domain.Services;
 using SweetManagerWebService.Shared.Domain.Repositories;
 
-namespace SweetManagerIotWebService.API.Commerce.Application.Internal.CommandServices;
+namespace SweetManagerWebService.Commerce.Application.Internal.CommandServices;
 
 public class ContractOwnerCommandService(
     IContractOwnerRepository contractOwnerRepository,

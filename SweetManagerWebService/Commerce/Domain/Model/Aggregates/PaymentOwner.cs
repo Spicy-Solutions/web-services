@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
-using SweetManagerIotWebService.API.IAM.Domain.Model.Aggregates;
-using SweetManagerIotWebService.API.Inventory.Domain.Model.Entities;
+using SweetManagerWebService.Commerce.Domain.Model.Commands;
+using SweetManagerWebService.IAM.Domain.Model.Aggregates;
+using SweetManagerWebService.Inventory.Domain.Model.Entities;
 
-namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Aggregates;
+namespace SweetManagerWebService.Commerce.Domain.Model.Aggregates;
 
 public partial class PaymentOwner
 {

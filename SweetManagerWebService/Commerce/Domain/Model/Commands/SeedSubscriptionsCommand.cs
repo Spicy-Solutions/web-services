@@ -1,3 +1,3 @@
-﻿namespace SweetManagerIotWebService.API.Commerce.Domain.Model.Commands;
+﻿namespace SweetManagerWebService.Commerce.Domain.Model.Commands;
 
 public record SeedSubscriptionsCommand();
