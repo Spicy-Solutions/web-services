@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
 using SweetManagerWebService.Models;
+using SweetManagerWebService.Inventory.Domain.Model.Aggregates;
+using SweetManagerWebService.Inventory.Domain.Model.Entities;
 
 namespace SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 
@@ -69,6 +71,9 @@ public partial class SweetManagerContext : DbContext
     public virtual DbSet<Thermostat> Thermostats { get; set; }
 
     public virtual DbSet<TypeRoom> TypeRooms { get; set; }
+
+    public virtual DbSet<RfidCard> RfidCards { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -590,6 +595,21 @@ public partial class SweetManagerContext : DbContext
                 .HasForeignKey(d => d.RoomId)
                 .HasConstraintName("smoke_sensors_ibfk_1");
         });
+        
+         modelBuilder.Entity<RfidCard>(entity => {
+            
+             entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+             entity.ToTable("rfid_cards");
+             entity.HasIndex(t => t.RoomId, "room_id");
+
+             entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+             entity.Property(e => e.RoomId).HasColumnName("room_id");
+
+             entity.HasOne(d => d.Room).WithMany(p => p.RfidCards)
+                 .HasForeignKey(d => d.RoomId)
+                 .HasConstraintName("rfid_cards_ibfk_1");
+         });
 
         modelBuilder.Entity<Subscription>(entity =>
         {
