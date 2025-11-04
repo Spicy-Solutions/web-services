@@ -1,11 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
+﻿using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
-using SweetManagerWebService.Models;
+using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
+using SweetManagerWebService.Commerce.Domain.Model.Entities;
+using SweetManagerWebService.Communication.Domain.Model.Aggregates;
+using SweetManagerWebService.IAM.Domain.Model.Aggregates;
+using SweetManagerWebService.IAM.Domain.Model.Entities.Credentials;
+using SweetManagerWebService.IAM.Domain.Model.Entities.Preferences;
+using SweetManagerWebService.IAM.Domain.Model.Entities.Roles;
 using SweetManagerWebService.Inventory.Domain.Model.Aggregates;
 using SweetManagerWebService.Inventory.Domain.Model.Entities;
-
+using SweetManagerWebService.Monitoring.Domain.Model.Aggregates;
+using SweetManagerWebService.Monitoring.Domain.Model.Entities;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Entities;
+using System.Data;
 namespace SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 
 public partial class SweetManagerContext : DbContext
@@ -30,7 +38,6 @@ public partial class SweetManagerContext : DbContext
 
     public virtual DbSet<AdminCredential> AdminCredentials { get; set; }
 
-    public virtual DbSet<Booking> Bookings { get; set; }
 
     public virtual DbSet<ContractOwner> ContractOwners { get; set; }
 
@@ -88,9 +95,6 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.RoleId, "role_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .HasColumnName("email");
@@ -101,7 +105,7 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasColumnName("phone");
-            entity.Property(e => e.PhotoUrl)
+            entity.Property(e => e.PhotoURL)
                 .HasMaxLength(5000)
                 .HasColumnName("photo_url");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
@@ -111,9 +115,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Surname)
                 .HasMaxLength(100)
                 .HasColumnName("surname");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Hotel).WithMany(p => p.Admins)
                 .HasForeignKey(d => d.HotelId)
@@ -134,12 +135,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Code)
                 .HasMaxLength(50)
                 .HasColumnName("code");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Admin).WithOne(p => p.AdminCredential)
                 .HasForeignKey<AdminCredential>(d => d.AdminId)
@@ -147,54 +142,6 @@ public partial class SweetManagerContext : DbContext
                 .HasConstraintName("admin_credentials_ibfk_1");
         });
 
-        modelBuilder.Entity<Booking>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("bookings");
-
-            entity.HasIndex(e => e.PaymentCustomerId, "payment_customer_id");
-
-            entity.HasIndex(e => e.PreferenceId, "preference_id");
-
-            entity.HasIndex(e => e.RoomId, "room_id");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount)
-                .HasPrecision(10)
-                .HasColumnName("amount");
-            entity.Property(e => e.Description)
-                .HasMaxLength(5000)
-                .HasColumnName("description");
-            entity.Property(e => e.FinalDate)
-                .HasColumnType("date")
-                .HasColumnName("final_date");
-            entity.Property(e => e.NightCount).HasColumnName("night_count");
-            entity.Property(e => e.PaymentCustomerId).HasColumnName("payment_customer_id");
-            entity.Property(e => e.PreferenceId).HasColumnName("preference_id");
-            entity.Property(e => e.PriceRoom)
-                .HasPrecision(10)
-                .HasColumnName("price_room");
-            entity.Property(e => e.RoomId).HasColumnName("room_id");
-            entity.Property(e => e.StartDate)
-                .HasColumnType("date")
-                .HasColumnName("start_date");
-            entity.Property(e => e.State)
-                .HasMaxLength(50)
-                .HasColumnName("state");
-
-            entity.HasOne(d => d.PaymentCustomer).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.PaymentCustomerId)
-                .HasConstraintName("bookings_ibfk_1");
-
-            entity.HasOne(d => d.Preference).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.PreferenceId)
-                .HasConstraintName("bookings_ibfk_3");
-
-            entity.HasOne(d => d.Room).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.RoomId)
-                .HasConstraintName("bookings_ibfk_2");
-        });
 
         modelBuilder.Entity<ContractOwner>(entity =>
         {
@@ -207,7 +154,6 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.SubscriptionId, "subscription_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.FinalDate)
                 .HasColumnType("date")
                 .HasColumnName("final_date");
@@ -217,7 +163,6 @@ public partial class SweetManagerContext : DbContext
                 .HasColumnName("start_date");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.SubscriptionId).HasColumnName("subscription_id");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.ContractOwners)
                 .HasForeignKey(d => d.OwnerId)
@@ -237,9 +182,6 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.RoleId, "role_id1");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
@@ -249,7 +191,7 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasColumnName("phone");
-            entity.Property(e => e.PhotoUrl)
+            entity.Property(e => e.PhotoURL)
                 .HasMaxLength(5000)
                 .HasColumnName("photo_url");
             entity.Property(e => e.State)
@@ -258,9 +200,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Surname)
                 .HasMaxLength(50)
                 .HasColumnName("surname");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Guests)
                 .HasForeignKey(d => d.RoleId)
@@ -277,12 +216,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Code)
                 .HasMaxLength(50)
                 .HasColumnName("code");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Guest).WithOne(p => p.GuestCredential)
                 .HasForeignKey<GuestCredential>(d => d.GuestId)
@@ -299,14 +232,8 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.GuestId, "guest_id1");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
             entity.Property(e => e.GuestId).HasColumnName("guest_id");
             entity.Property(e => e.Temperature).HasColumnName("temperature");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Guest).WithMany(p => p.GuestPreferences)
                 .HasForeignKey(d => d.GuestId)
@@ -326,7 +253,6 @@ public partial class SweetManagerContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("address");
             entity.Property(e => e.Category).HasColumnName("category");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .HasMaxLength(5000)
                 .HasColumnName("description");
@@ -340,7 +266,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasColumnName("phone");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.Hotels)
                 .HasForeignKey(d => d.OwnerId)
@@ -363,7 +288,7 @@ public partial class SweetManagerContext : DbContext
                 .HasMaxLength(5000)
                 .HasColumnName("url");
 
-            entity.HasOne(d => d.Hotel).WithMany(p => p.Multimedia)
+            entity.HasOne(d => d.Hotel).WithMany(p => p.Multimedias)
                 .HasForeignKey(d => d.HotelId)
                 .HasConstraintName("multimedias_ibfk_1");
         });
@@ -380,7 +305,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Content)
                 .HasMaxLength(5000)
                 .HasColumnName("content");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.HotelId).HasColumnName("hotel_id");
             entity.Property(e => e.ReceiverId).HasColumnName("receiver_id");
             entity.Property(e => e.SenderId).HasColumnName("sender_id");
@@ -390,7 +314,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Title)
                 .HasMaxLength(100)
                 .HasColumnName("title");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Hotel).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.HotelId)
@@ -406,9 +329,6 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.RoleId, "role_id2");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .HasColumnName("email");
@@ -418,7 +338,7 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasColumnName("phone");
-            entity.Property(e => e.PhotoUrl)
+            entity.Property(e => e.PhotoURL)
                 .HasMaxLength(5000)
                 .HasColumnName("photo_url");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
@@ -428,9 +348,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Surname)
                 .HasMaxLength(50)
                 .HasColumnName("surname");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Owners)
                 .HasForeignKey(d => d.RoleId)
@@ -447,12 +364,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Code)
                 .HasMaxLength(50)
                 .HasColumnName("code");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Owner).WithOne(p => p.OwnerCredential)
                 .HasForeignKey<OwnerCredential>(d => d.OwnerId)
@@ -469,12 +380,10 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.GuestId, "guest_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.FinalAmount)
                 .HasPrecision(10)
                 .HasColumnName("final_amount");
             entity.Property(e => e.GuestId).HasColumnName("guest_id");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Guest).WithMany(p => p.PaymentCustomers)
                 .HasForeignKey(d => d.GuestId)
@@ -490,7 +399,6 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.OwnerId, "owner_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .HasMaxLength(200)
                 .HasColumnName("description");
@@ -498,7 +406,6 @@ public partial class SweetManagerContext : DbContext
                 .HasPrecision(10)
                 .HasColumnName("final_amount");
             entity.Property(e => e.OwnerId).HasColumnName("owner_id");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.PaymentOwners)
                 .HasForeignKey(d => d.OwnerId)
@@ -621,7 +528,6 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Content)
                 .HasMaxLength(200)
                 .HasColumnName("content");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
@@ -629,7 +535,6 @@ public partial class SweetManagerContext : DbContext
                 .HasPrecision(10)
                 .HasColumnName("price");
             entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Supply>(entity =>
@@ -643,9 +548,7 @@ public partial class SweetManagerContext : DbContext
             entity.HasIndex(e => e.ProviderId, "provider_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("Created At");
+            entity.Property(e => e.ProviderId).HasColumnName("provider_id");
             entity.Property(e => e.HotelId).HasColumnName("hotel_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -653,14 +556,7 @@ public partial class SweetManagerContext : DbContext
             entity.Property(e => e.Price)
                 .HasPrecision(10)
                 .HasColumnName("price");
-            entity.Property(e => e.ProviderId).HasColumnName("provider_id");
-            entity.Property(e => e.State)
-                .HasMaxLength(50)
-                .HasColumnName("state");
             entity.Property(e => e.Stock).HasColumnName("stock");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("Updated At");
 
             entity.HasOne(d => d.Hotel).WithMany(p => p.Supplies)
                 .HasForeignKey(d => d.HotelId)

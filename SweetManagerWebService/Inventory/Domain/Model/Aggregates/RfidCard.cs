@@ -1,5 +1,5 @@
-﻿using SweetManagerWebService.Inventory.Domain.Model.Commands;
-using SweetManagerWebService.Reservations.Domain.Model.Aggregates;
+﻿﻿using SweetManagerWebService.Inventory.Domain.Model.Commands;
+using SweetManagerWebService.Monitoring.Domain.Model.Aggregates;
 
 namespace SweetManagerWebService.Inventory.Domain.Model.Aggregates;
 

@@ -1,8 +1,8 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using SweetManagerWebService.Inventory.Domain.Model.Commands;
 using SweetManagerWebService.Inventory.Domain.Model.Entities;
-using SweetManagerWebService.OrganizationalManagement.Domain.Model.Aggregates;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
 
 namespace SweetManagerWebService.Inventory.Domain.Model.Aggregates;
 

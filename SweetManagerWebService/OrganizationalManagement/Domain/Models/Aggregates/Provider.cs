@@ -1,4 +1,4 @@
-using SweetManagerWebService.Models;
+using SweetManagerWebService.Inventory.Domain.Model.Aggregates;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Commands;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.ValueObjects;
 

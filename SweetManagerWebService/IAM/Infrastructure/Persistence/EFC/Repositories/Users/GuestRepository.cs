@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using SweetManagerWebService.IAM.Domain.Model.Aggregates;
 using SweetManagerWebService.IAM.Domain.Repositories.Users;
-using SweetManagerWebService.OrganizationalManagement.Domain.Model.Aggregates;
-using SweetManagerWebService.Reservations.Domain.Model.Aggregates;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Repositories;
 
@@ -28,35 +25,17 @@ namespace SweetManagerWebService.IAM.Infrastructure.Persistence.EFC.Repositories
         }
 
         public async Task<IEnumerable<Guest>> FindAllByHotelIdAsync(int hotelId)
-         => await Task.Run(() => (
-            from gu in Context.Set<Guest>().ToList()
-            join pc in Context.Set<PaymentCustomer>().ToList()
-                on gu.Id equals pc.GuestId
-            join bo in Context.Set<Booking>().ToList()
-                on pc.Id equals bo.PaymentCustomerId
-            join ro in Context.Set<Room>().ToList()
-                on bo.RoomId equals ro.Id
-            join ho in Context.Set<Hotel>().ToList()
-                on ro.HotelId equals ho.Id
-            where ho.Id.Equals(hotelId)
-
-            select gu
-         ).ToList());
+        {
+            // Since the Booking bounded context was removed, this method returns an empty list
+            // TODO: Implement alternative logic if needed based on new requirements
+            return await Task.FromResult(new List<Guest>());
+        }
 
         public async Task<int?> FindHotelIdByIdAsync(int id)
-         => await Task.Run(() => (
-            from gu in Context.Set<Guest>().ToList()
-            join pc in Context.Set<PaymentCustomer>().ToList()
-                on gu.Id equals pc.GuestId
-            join bo in Context.Set<Booking>().ToList()
-                on pc.Id equals bo.PaymentCustomerId
-            join ro in Context.Set<Room>().ToList()
-                on bo.RoomId equals ro.Id
-            join ho in Context.Set<Hotel>().ToList()
-                on ro.HotelId equals ho.Id
-            where gu.Id.Equals(id)
-
-            select ho
-         ).FirstOrDefault()?.Id);
+        {
+            // Since the Booking bounded context was removed, this method returns null
+            // TODO: Implement alternative logic if needed based on new requirements
+            return await Task.FromResult<int?>(null);
+        }
     }
 }

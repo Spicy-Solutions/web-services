@@ -1,3 +1,4 @@
+using SweetManagerWebService.Inventory.Domain.Model.Aggregates;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
 using System.Text.Json.Serialization;
 using SweetManagerWebService.Monitoring.Domain.Model.Commands.Rooms;
@@ -12,7 +13,6 @@ public partial class Room
     public int? HotelId { get; set; }
     public string? State { get; set; }
 
-    [JsonIgnore] public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<Thermostat> Thermostats { get; set; } = new List<Thermostat>();
 

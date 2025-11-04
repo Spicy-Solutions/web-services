@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using SweetManagerWebService.IAM.Domain.Model.Aggregates;
 using SweetManagerWebService.IAM.Domain.Repositories.Users;
-using SweetManagerWebService.OrganizationalManagement.Domain.Model.Aggregates;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Repositories;
 

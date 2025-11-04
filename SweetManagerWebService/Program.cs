@@ -1,20 +1,106 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
+using SweetManagerWebService.IAM.Application.Internal.CommandServices.Credentials;
+using SweetManagerWebService.IAM.Application.Internal.CommandServices.Preferences;
+using SweetManagerWebService.IAM.Application.Internal.CommandServices.Roles;
+using SweetManagerWebService.IAM.Application.Internal.CommandServices.Users;
+using SweetManagerWebService.IAM.Application.Internal.OutboundServices;
+using SweetManagerWebService.IAM.Application.Internal.QueryServices.Credentials;
+using SweetManagerWebService.IAM.Application.Internal.QueryServices.Preferences;
+using SweetManagerWebService.IAM.Application.Internal.QueryServices.Roles;
+using SweetManagerWebService.IAM.Application.Internal.QueryServices.Users;
+using SweetManagerWebService.IAM.Domain.Repositories.Credentials;
+using SweetManagerWebService.IAM.Domain.Repositories.Preferences;
+using SweetManagerWebService.IAM.Domain.Repositories.Roles;
+using SweetManagerWebService.IAM.Domain.Repositories.Users;
+using SweetManagerWebService.IAM.Domain.Services.CommandServices.Credentials;
+using SweetManagerWebService.IAM.Domain.Services.CommandServices.Preferences;
+using SweetManagerWebService.IAM.Domain.Services.CommandServices.Roles;
+using SweetManagerWebService.IAM.Domain.Services.CommandServices.Users;
+using SweetManagerWebService.IAM.Domain.Services.QueryServices.Credentials;
+using SweetManagerWebService.IAM.Domain.Services.QueryServices.Preferences;
+using SweetManagerWebService.IAM.Domain.Services.QueryServices.Roles;
+using SweetManagerWebService.IAM.Domain.Services.QueryServices.Users;
+using SweetManagerWebService.IAM.Infrastructure.Hashing.Argon2Id.Services;
+using SweetManagerWebService.IAM.Infrastructure.Persistence.EFC.Repositories.Credentials;
+using SweetManagerWebService.IAM.Infrastructure.Persistence.EFC.Repositories.Preferences;
+using SweetManagerWebService.IAM.Infrastructure.Persistence.EFC.Repositories.Roles;
+using SweetManagerWebService.IAM.Infrastructure.Persistence.EFC.Repositories.Users;
+using SweetManagerWebService.IAM.Infrastructure.Pipeline.Middleware.Extensions;
+using SweetManagerWebService.IAM.Infrastructure.Population.Roles;
+using SweetManagerWebService.IAM.Infrastructure.Tokens.JWT.Configuration;
+using SweetManagerWebService.IAM.Infrastructure.Tokens.JWT.Services;
 using SweetManagerWebService.Shared.Domain.Repositories;
 using SweetManagerWebService.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Repositories;
 using System.Data;
+using System.Text;
+using SweetManagerIotWebService.Inventory.Infrastructure.Persistence.Repositories;
+using SweetManagerWebService.Commerce.Application.Internal.CommandServices;
+using SweetManagerWebService.Commerce.Application.Internal.QueryServices;
+using SweetManagerWebService.Commerce.Domain.Repositories;
+using SweetManagerWebService.Commerce.Domain.Services;
+using SweetManagerWebService.Commerce.Infrastructure.Persistence.Dapper.Dashboard;
+using SweetManagerWebService.Commerce.Infrastructure.Persistence.EFC.Repositories;
+using SweetManagerWebService.Commerce.Infrastructure.Population.Subscriptions;
+using SweetManagerWebService.OrganizationalManagement.Application.Internal.CommandServices;
+using SweetManagerWebService.OrganizationalManagement.Application.Internal.QueryServices;
+using SweetManagerWebService.OrganizationalManagement.Domain.Repositories;
+using SweetManagerWebService.OrganizationalManagement.Domain.Services;
+using SweetManagerWebService.OrganizationalManagement.Infrastructure.Persistence.EFC.Repositories;
+using SweetManagerWebService.Inventory.Application.Internal.CommandServices;
+using SweetManagerWebService.Inventory.Application.Internal.QueryServices;
+using SweetManagerWebService.Inventory.Domain.Repositories;
+using SweetManagerWebService.Inventory.Domain.Services;
+using SweetManagerWebService.Inventory.Infrastructure.Persistence.Repositories;
+using SweetManagerWebService.Communication.Application.Internal.CommandServices;
+using SweetManagerWebService.Communication.Application.Internal.QueryServices;
+using SweetManagerWebService.Communication.Domain.Repositories;
+using SweetManagerWebService.Communication.Domain.Services;
+using SweetManagerWebService.Communication.Infrastructure.Persistence.EFC.Repositories;
+using SweetManagerWebService.Communication.Infrastructure.Mails.SMTP.Configuration;
+using SweetManagerWebService.Communication.Application.Internal.OutboundServices;
+using SweetManagerWebService.Communication.Infrastructure.Mails.SMTP.Services;
+using SweetManagerWebService.OrganizationalManagement.Interfaces.ACL;
+using SweetManagerWebService.OrganizationalManagement.Interfaces.ACL.Services;
+using SweetManagerWebService.IAM.Interfaces.ACL;
+using SweetManagerWebService.IAM.Interfaces.ACL.Services;
+using SweetManagerWebService.Communication.Application.Internal.OutboundServices.ACL;
+using SweetManagerWebService.OrganizationalManagement.Application.Internal.OutboundServices.ACL;
+using SweetManagerWebService.Monitoring.Application.Internal.CommandServices;
+using SweetManagerWebService.Monitoring.Application.Internal.QueryServices;
+using SweetManagerWebService.Monitoring.Domain.Repositories;
+using SweetManagerWebService.Monitoring.Domain.Services.Room;
+using SweetManagerWebService.Monitoring.Domain.Services.SmokeSensor;
+using SweetManagerWebService.Monitoring.Domain.Services.Thermostat;
+using SweetManagerWebService.Monitoring.Domain.Services.TypeRoom;
+using SweetManagerWebService.Monitoring.Infrastructure.Persistence.EFC.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Configuration.AddEnvironmentVariables().AddUserSecrets<Program>();
+
 builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 
 // Configure Lowercase URLs
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+#region SMTP_CONFIG
+
+var mailSettings = builder.Configuration.GetSection("MailSettings");
+
+builder.Services.Configure<MailSettings>(mailSettings);
+
+#endregion
 
 #region Database Configuration
 // Add Database Connection
@@ -47,10 +133,11 @@ builder.Services.AddDbContext<SweetManagerContext>(
 
 #endregion
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+#region OPENAPI Configuration
+// Configure Lowercase URLs
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-#region OPEN_API CONFIGURATION
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     c =>
     {
@@ -99,10 +186,164 @@ builder.Services.AddSwaggerGen(
 
 #endregion
 
-#region DEPENDENCY_INJECTION
+builder.Services.AddHttpContextAccessor();
 
+#region Dependency Injection
+
+// IAM Bounded context
+builder.Services.AddScoped<IAdminCredentialRepository, AdminCredentialRepository>();
+builder.Services.AddScoped<IGuestCredentialRepository, GuestCredentialRepository>();
+builder.Services.AddScoped<IOwnerCredentialRepository, OwnerCredentialRepository>();
+builder.Services.AddScoped<IGuestPreferenceRepository, GuestPreferenceRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IGuestRepository, GuestRepository>();
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IAdminCredentialCommandService, AdminCredentialCommandService>();
+builder.Services.AddScoped<IGuestCredentialCommandService, GuestCredentialCommandService>();
+builder.Services.AddScoped<IOwnerCredentialCommandService, OwnerCredentialCommandService>();
+builder.Services.AddScoped<IGuestPreferenceCommandService, GuestPreferenceCommandService>();
+builder.Services.AddScoped<IRoleCommandService, RoleCommandService>();
+builder.Services.AddScoped<IAdminCommandService, AdminCommandService>();
+builder.Services.AddScoped<IGuestCommandService, GuestCommandService>();
+builder.Services.AddScoped<IOwnerCommandService, OwnerCommandService>();
+builder.Services.AddScoped<IAdminCredentialQueryService, AdminCredentialQueryService>();
+builder.Services.AddScoped<IGuestCredentialQueryService, GuestCredentialQueryService>();
+builder.Services.AddScoped<IOwnerCredentialQueryService, OwnerCredentialQueryService>();
+builder.Services.AddScoped<IGuestPreferenceQueryService, GuestPreferenceQueryService>();
+builder.Services.AddScoped<IRoleQueryService, RoleQueryService>();
+builder.Services.AddScoped<IAdminQueryService, AdminQueryService>();
+builder.Services.AddScoped<IGuestQueryService, GuestQueryService>();
+builder.Services.AddScoped<IOwnerQueryService, OwnerQueryService>();
+builder.Services.AddScoped<IHashingService, HashingService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IIamContextFacade, IamContextFacade>();
+builder.Services.AddScoped<RolesInitializer>();
+builder.Services.AddScoped<SubscriptionsInitializer>();
+
+
+// Commerce Bounded context
+builder.Services.AddScoped<IPaymentCustomerRepository, PaymentCustomerRepository>();
+builder.Services.AddScoped<IPaymentCustomerCommandService, PaymentCustomerCommandService>();
+builder.Services.AddScoped<IPaymentCustomerQueryService, PaymentCustomerQueryService>();
+
+builder.Services.AddScoped<IPaymentOwnerRepository, PaymentOwnerRepository>();
+builder.Services.AddScoped<IPaymentOwnerCommandService, PaymentOwnerCommandService>();
+builder.Services.AddScoped<IPaymentOwnerQueryService, PaymentOwnerQueryService>();
+
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandService>();
+builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
+
+builder.Services.AddScoped<IContractOwnerRepository, ContractOwnerRepository>();
+builder.Services.AddScoped<IContractOwnerCommandService, ContractOwnerCommandService>();
+builder.Services.AddScoped<IContractOwnerQueryService, ContractOwnerQueryService>();
+
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardQueryService, DashboardQueryService>();
+
+// Inventory Bounded Context
+builder.Services.AddScoped<ISupplyRepository, SupplyRepository>(); 
+builder.Services.AddScoped<ISupplyCommandService, SupplyCommandService>();
+builder.Services.AddScoped<ISupplyQueryService, SupplyQueryService>();
+
+builder.Services.AddScoped<ISupplyRequestRepository, SupplyRequestRepository>();
+builder.Services.AddScoped<ISupplyRequestCommandService, SupplyRequestCommandService>();
+builder.Services.AddScoped<ISupplyRequestQueryService, SupplyRequestQueryService>();
+
+builder.Services.AddScoped<IRfidCardRepository, RfidCardRepository>();
+builder.Services.AddScoped<IRfidCardCommandService, RfidCardCommandService>();
+builder.Services.AddScoped<IRfidCardQueryService, RfidCardQueryService>();
+
+// Communication Bounded context
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationCommandService, NotificationCommandService>();
+builder.Services.AddScoped<INotificationQueryService, NotificationQueryService>();
+builder.Services.AddScoped<ExternalOrganizationManagementService>();
+builder.Services.AddScoped<SweetManagerWebService.Communication.Application.Internal.OutboundServices.ACL.ExternalIAMService>();
+builder.Services.AddTransient<IMailService, MailService>();
+
+// Organizational Management Bounded context
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+builder.Services.AddScoped<IHotelCommandService, HotelCommandService>();
+builder.Services.AddScoped<IHotelQueryService, HotelQueryService>();
+builder.Services.AddScoped<IProviderCommandService, ProviderCommandService>();
+builder.Services.AddScoped<IProviderQueryService, ProviderQueryService>();
+builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
+builder.Services.AddScoped<IMultimediaRepository, MultimediaRepository>();
+builder.Services.AddScoped<IMultimediaCommandService, MultimediaCommandService>();
+builder.Services.AddScoped<IMultimediaQueryService, MultimediaQueryService>();
+builder.Services.AddScoped<IFogServerRepository, FogServerRepository>();
+builder.Services.AddScoped<IFogServerCommandService, FogServerCommandService>();
+builder.Services.AddScoped<IFogServerQueryService, FogServerQueryService>();
+builder.Services.AddScoped<IOrganizationManagementContextFacade, OrganizationManagementContextFacade>();
+builder.Services.AddScoped<ExternalIamService>();
+
+// Monitoring Bounded context
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomCommandService, RoomCommandService>();
+builder.Services.AddScoped<IRoomQueryService, RoomQueryService>();
+
+builder.Services.AddScoped<ISmokeSensorRepositoy, SmokeSensorRepository>();
+builder.Services.AddScoped<ISmokeSensorCommandService, SmokeSensorCommandService>();
+builder.Services.AddScoped<ISmokeSensorQueryServices, SmokeSensorQueryService>();
+
+builder.Services.AddScoped<IThermostatRepository, ThermostatRepository>();
+builder.Services.AddScoped<IThermostatCommandService, ThermostatCommandService>();
+builder.Services.AddScoped<IThermostatQueryServices, ThermostatQueryService>();
+
+builder.Services.AddScoped<ITypeRoomRepository, TypeRoomRepository>();
+builder.Services.AddScoped<ITypeRoomCommandService, TypeRoomCommandServices>();
+
+// Shared Bounded context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+#endregion
+
+#region JWT Configuration
+
+var tokenSettings = builder.Configuration.GetSection("JwtSettings");
+
+builder.Services.Configure<TokenSettings>(tokenSettings);
+
+var secretKey = tokenSettings["SecretKey"];
+
+var audience = tokenSettings["Audience"];
+
+var issuer = tokenSettings["Issuer"];
+
+var securityKey = !string.IsNullOrEmpty(secretKey)
+    ? new SymmetricSecurityKey(Encoding.Default.GetBytes(secretKey))
+    : throw new ArgumentException("Secret key is null or empty");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        IssuerSigningKey = securityKey,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddScoped<IHashingService, HashingService>();
+
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddTransient<TokenValidationHandler>();
+
+builder.Services.AddAuthorization();
+
 #endregion
 
 var app = builder.Build();
@@ -115,8 +356,19 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<SweetManagerContext>();
     context.Database.EnsureCreated();
 }
+
 #endregion
 
+#region Run DatabaseInitializer
+using (var scope = app.Services.CreateScope())
+{
+    var roleInitializer = scope.ServiceProvider.GetRequiredService<RolesInitializer>();
+    var subscriptionsInitializer = scope.ServiceProvider.GetRequiredService<SubscriptionsInitializer>();
+
+    roleInitializer.InitializeAsync().Wait();
+    subscriptionsInitializer.InitializeAsync().Wait();
+}
+#endregion
 
 // Configuration cors
 app.UseCors(
@@ -129,10 +381,14 @@ app.UseSwaggerUI();
 
 app.UseRouting();
 
+app.UseRequestAuthorization();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+app.Run(); 
