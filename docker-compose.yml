@@ -1,0 +1,133 @@
+version: '3.8'
+
+
+x-common-env: &common-env
+  ASPNETCORE_ENVIRONMENT: Production
+  SweetManagerDbConnection: "Server=db31043.public.databaseasp.net; Database=db31043; Uid=db31043; Pwd=3Cb=E!2c#8kD;"
+  JwtSettings__SecretKey: "DhfPTWJP4VvK5XBVrQqT5P3CgF9U7ZzFxLQzCp3Yurk="
+  JwtSettings__Audience: "SweetManagerAudience"
+  JwtSettings__Issuer: "SweetManagerIssuer"
+
+services:
+  # IAM Bounded Context
+  iam-service:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-iam
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5001
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+  # Commerce Bounded Context
+  commerce-service:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-commerce
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5002
+    ports:
+      - "5002:5002"
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+  # Communication Bounded Context
+  communication-service:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-communication
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5003
+      MailSettings__Server: smtp.gmail.com
+      MailSettings__Port: 587
+      MailSettings__SenderName: SweetManager
+      MailSettings__SenderEmail: sweetmanager@example.com
+      MailSettings__UserName: sweetmanager@example.com
+      MailSettings__Password: yourpassword
+    ports:
+      - "5003:5003"
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+  # Inventory Bounded Context
+  inventory-service:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-inventory
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5004
+    ports:
+      - "5004:5004"
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+  # Monitoring Bounded Context
+  monitoring-service:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-monitoring
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5005
+    ports:
+      - "5005:5005"
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+  # Organizational Management Bounded Context
+  organizational-service:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-organizational
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5006
+    ports:
+      - "5006:5006"
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+  # API Gateway
+  gateway:
+    build:
+      context: .
+      dockerfile: SweetManagerWebService/Dockerfile
+    container_name: sweetmanager-gateway
+    environment:
+      <<: *common-env
+      ASPNETCORE_URLS: http://+:5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - iam-service
+      - commerce-service
+      - communication-service
+      - inventory-service
+      - monitoring-service
+      - organizational-service
+    restart: unless-stopped
+    networks:
+      - sweetmanager-network
+
+networks:
+  sweetmanager-network:
+    driver: bridge
+
