@@ -29,17 +29,6 @@ public class RoomRepository(SweetManagerContext context): BaseRepository<Room>(c
             .Where(r => r.TypeRoomId == typeroomid).ToListAsync();
     }
 
-    public async Task<IEnumerable<Room>> FindByRange(DateTime startDate, DateTime finalDate, int hotelId)
-    {
-        return await Context.Set<Room>()
-            .Where(r =>
-                r.HotelId == hotelId &&
-                !r.Bookings.Any(b =>
-                    b.StartDate <= finalDate && b.FinalDate >= startDate))
-            .ToListAsync();
-    }
-
-
 
     public async Task<bool> UpdateRoomStateAsync(int id, string state)
     {

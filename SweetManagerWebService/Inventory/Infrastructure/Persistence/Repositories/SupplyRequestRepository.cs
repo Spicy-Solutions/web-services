@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using SweetManagerWebService.Commerce.Domain.Model.Aggregates;
 using SweetManagerWebService.IAM.Domain.Model.Aggregates;
 using SweetManagerWebService.Inventory.Domain.Model.Entities;
 using SweetManagerWebService.Inventory.Domain.Repositories;
-using SweetManagerWebService.OrganizationalManagement.Domain.Model.Aggregates;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Configuration;
 using SweetManagerWebService.Shared.Infrastructure.Persistence.EFC.Repositories;
 

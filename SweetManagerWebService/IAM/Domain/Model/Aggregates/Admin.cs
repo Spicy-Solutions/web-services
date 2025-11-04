@@ -1,6 +1,7 @@
 ﻿using SweetManagerWebService.IAM.Domain.Model.Commands.Authentication;
 using SweetManagerWebService.IAM.Domain.Model.Entities.Credentials;
 using SweetManagerWebService.IAM.Domain.Model.Entities.Roles;
+using SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
 
 namespace SweetManagerWebService.IAM.Domain.Model.Aggregates;
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using SweetManagerWebService.IAM.Domain.Model.Aggregates;
 using SweetManagerWebService.IAM.Domain.Model.Commands.Preferences;
@@ -13,7 +13,6 @@ public partial class GuestPreference
 
     public int Temperature { get; set; }
 
-    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual Guest? Guest { get; set; }
 

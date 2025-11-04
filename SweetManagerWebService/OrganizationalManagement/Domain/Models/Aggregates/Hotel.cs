@@ -1,8 +1,10 @@
-using SweetManagerWebService.Models;
+using SweetManagerWebService.Communication.Domain.Model.Aggregates;
+using SweetManagerWebService.IAM.Domain.Model.Aggregates;
+using SweetManagerWebService.Inventory.Domain.Model.Aggregates;
+using SweetManagerWebService.Monitoring.Domain.Model.Aggregates;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Commands;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Entities;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.ValueObjects;
-using Multimedia = SweetManagerWebService.Models.Multimedia;
 
 namespace SweetManagerWebService.OrganizationalManagement.Domain.Models.Aggregates;
 

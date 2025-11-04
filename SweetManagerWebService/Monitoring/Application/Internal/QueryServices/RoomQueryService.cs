@@ -26,9 +26,4 @@ public class RoomQueryService(IRoomRepository roomRepository) : IRoomQueryServic
     {
         return await roomRepository.FindByTypeRoomIdAsync(query.TypeRoomId);
     }
-
-    public async Task<IEnumerable<Room>> Handle(GetAllRoomsByBookingAvailabilityInARangeQuery query)
-    {
-        return await roomRepository.FindByRange(query.StartDate, query.FinalDate, query.HotelId);
-    }
 }
