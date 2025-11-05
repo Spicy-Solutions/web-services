@@ -1,6 +1,5 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
-using SweetManagerWebService.Communication.Application.Internal.QueryServices;
 using SweetManagerWebService.Communication.Domain.Model.Queries;
 using SweetManagerWebService.Communication.Domain.Services;
 using SweetManagerWebService.Communication.Interfaces.REST.Resources;
