@@ -1,6 +1,6 @@
 using System.Net.Mime;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SweetManagerWebService.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using SweetManagerWebService.Monitoring.Domain.Model.Queries;
 using SweetManagerWebService.Monitoring.Domain.Services.Room;
 using SweetManagerWebService.Monitoring.Interfaces.REST.Resources.Room;

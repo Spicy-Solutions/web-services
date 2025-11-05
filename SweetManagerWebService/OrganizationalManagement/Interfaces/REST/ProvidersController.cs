@@ -1,6 +1,6 @@
 using System.Net.Mime;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SweetManagerWebService.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Commands;
 using SweetManagerWebService.OrganizationalManagement.Domain.Models.Queries;
 using SweetManagerWebService.OrganizationalManagement.Domain.Services;
