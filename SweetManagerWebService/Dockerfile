@@ -9,11 +9,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SweetManagerWebService/SweetManagerWebService.csproj", "SweetManagerWebService/"]
-RUN dotnet restore "./SweetManagerWebService/SweetManagerWebService.csproj"
+COPY ["SweetManagerWebService.csproj", "."]
+RUN dotnet restore "./SweetManagerWebService.csproj"
 COPY . .
-WORKDIR "/src/SweetManagerWebService"
-RUN dotnet build "./SweetManagerWebService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src"
+RUN dotnet build "SweetManagerWebService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

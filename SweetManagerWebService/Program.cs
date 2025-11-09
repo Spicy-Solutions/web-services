@@ -243,7 +243,7 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardQueryService, DashboardQueryService>();
 
 // Inventory Bounded Context
-builder.Services.AddScoped<ISupplyRepository, SupplyRepository>(); 
+builder.Services.AddScoped<ISupplyRepository, SupplyRepository>();
 builder.Services.AddScoped<ISupplyCommandService, SupplyCommandService>();
 builder.Services.AddScoped<ISupplyQueryService, SupplyQueryService>();
 
@@ -294,6 +294,7 @@ builder.Services.AddScoped<IThermostatQueryServices, ThermostatQueryService>();
 
 builder.Services.AddScoped<ITypeRoomRepository, TypeRoomRepository>();
 builder.Services.AddScoped<ITypeRoomCommandService, TypeRoomCommandServices>();
+builder.Services.AddScoped<ITypeRoomQueryService, TypeRoomQueryServices>();
 
 // Shared Bounded context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
